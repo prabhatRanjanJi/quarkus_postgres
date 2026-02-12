@@ -1,0 +1,29 @@
+package com.fulfilment.application.monolith.warehouses.domain.usecases;
+
+import com.fulfilment.application.monolith.warehouses.adapters.database.DbWarehouse;
+import com.fulfilment.application.monolith.warehouses.domain.WarehouseValidator;
+import com.fulfilment.application.monolith.warehouses.domain.models.Warehouse;
+import com.fulfilment.application.monolith.warehouses.domain.ports.ReplaceWarehouseOperation;
+import com.fulfilment.application.monolith.warehouses.domain.ports.WarehouseStore;
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.RequiredArgsConstructor;
+
+@ApplicationScoped
+@RequiredArgsConstructor
+public class ReplaceWarehouseUseCase implements ReplaceWarehouseOperation {
+
+  private final WarehouseStore warehouseStore;
+  private final WarehouseValidator warehouseValidator;
+
+
+
+  @Override
+  public DbWarehouse replace(Warehouse newWarehouse) {
+    // validate here
+    DbWarehouse currentWarehouse = warehouseValidator.validateWarehouseForReplacement(newWarehouse);
+
+    warehouseStore.archive(currentWarehouse);
+    return warehouseStore.create(newWarehouse);
+
+  }
+}

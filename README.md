@@ -4,7 +4,7 @@ This is a short code assignment that explores various aspects of software develo
 
 ## About the assignment
 
-You will find the tasks of this assignment on [CODE_ASSIGNMENT](CODE_ASSIGNMENT.md) file
+You will find the tasks of this assignment on [CODE_ASSIGNMENT](readme/CODE_ASSIGNMENT.md) file
 
 ## About the code base
 

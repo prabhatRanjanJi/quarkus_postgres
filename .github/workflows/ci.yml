@@ -1,4 +1,4 @@
-name: Quarkus Build & Test
+name: Quarkus CI Pipeline
 
 on:
   push:
@@ -41,13 +41,14 @@ jobs:
             target/*.jar
             target/quarkus-app/**
 
+
   # ==========================================
-  # Stage 2: Tests + Coverage
+  # Stage 2: Unit & Integration Tests
   # ==========================================
   test:
-    name: Unit & Integration Tests + Coverage
+    name: Run Unit & Integration Tests
     runs-on: ubuntu-latest
-    needs: build   # 👈 depends on build stage
+    needs: build
 
     steps:
       - name: Checkout source
@@ -60,8 +61,31 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           cache: maven
 
-      - name: Run Unit & Integration Tests
+      - name: Run Tests (Surefire + Failsafe)
         run: mvn verify
+
+
+  # ==========================================
+  # Stage 3: JaCoCo Coverage Report
+  # ==========================================
+  coverage:
+    name: Generate JaCoCo Coverage Report
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      - name: Generate JaCoCo Report
+        run: mvn jacoco:report
 
       - name: Upload JaCoCo Report
         uses: actions/upload-artifact@v4

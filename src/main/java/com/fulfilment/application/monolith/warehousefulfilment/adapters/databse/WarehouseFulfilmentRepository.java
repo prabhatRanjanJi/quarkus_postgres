@@ -1,8 +1,7 @@
-package com.fulfilment.application.monolith.warehousefulfilment.implementation;
+package com.fulfilment.application.monolith.warehousefulfilment.adapters.databse;
 
-import com.fulfilment.application.monolith.warehousefulfilment.database.DbWarehouseFulfilment;
-import com.fulfilment.application.monolith.warehousefulfilment.interfaces.WarehouseFulfilmentStore;
-import com.fulfilment.application.monolith.warehousefulfilment.model.WarehouseFulfilment;
+import com.fulfilment.application.monolith.warehousefulfilment.domain.ports.WarehouseFulfilmentStore;
+import com.fulfilment.application.monolith.warehousefulfilment.domain.model.WarehouseFulfilment;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jdk.jfr.Description;

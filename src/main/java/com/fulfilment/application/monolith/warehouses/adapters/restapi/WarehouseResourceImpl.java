@@ -1,9 +1,13 @@
 package com.fulfilment.application.monolith.warehouses.adapters.restapi;
 
+import com.fulfilment.application.monolith.warehouses.WarehouseUtility;
 import com.fulfilment.application.monolith.warehouses.adapters.database.DbWarehouse;
 import com.fulfilment.application.monolith.warehouses.adapters.database.WarehouseRepository;
 import com.fulfilment.application.monolith.warehouses.domain.WarehouseValidator;
 import com.fulfilment.application.monolith.warehouses.domain.ports.ReplaceWarehouseOperation;
+import com.fulfilment.application.monolith.warehouses.domain.usecases.ArchiveWarehouseUseCase;
+import com.fulfilment.application.monolith.warehouses.domain.usecases.CreateWarehouseUseCase;
+import com.fulfilment.application.monolith.warehouses.domain.usecases.ReplaceWarehouseUseCase;
 import com.warehouse.api.WarehouseResource;
 import com.warehouse.api.beans.Warehouse;
 import jakarta.enterprise.context.RequestScoped;
@@ -19,7 +23,10 @@ public class WarehouseResourceImpl implements WarehouseResource {
 
   @Inject private WarehouseRepository warehouseRepository;
   private final WarehouseValidator warehouseValidator;
-  private final ReplaceWarehouseOperation replaceWarehouseOperation;
+  private final CreateWarehouseUseCase createWarehouseUseCase;
+  private final ArchiveWarehouseUseCase archiveWarehouseUseCase;
+  private final ReplaceWarehouseUseCase replaceWarehouseUseCase;
+  private final WarehouseUtility warehouseUtility;
 
   @Override
   public List<Warehouse> listAllWarehousesUnits() {
@@ -28,57 +35,34 @@ public class WarehouseResourceImpl implements WarehouseResource {
 
   @Override
   public Warehouse createANewWarehouseUnit(@NotNull Warehouse data) {
-    warehouseValidator.validateWarehouseByBuCode(data.getBusinessUnitCode());
-    com.fulfilment.application.monolith.warehouses.domain.models.Warehouse warehouse = convertWarehouseObject(data);
-    warehouseValidator.validateWarehouse(warehouse);
-
-    DbWarehouse dbWarehouse = warehouseRepository.createWarehouse(warehouse);
-    return prepareDTOFromEntity(dbWarehouse);
-  }
-
-  private com.fulfilment.application.monolith.warehouses.domain.models.Warehouse convertWarehouseObject(Warehouse data) {
-    com.fulfilment.application.monolith.warehouses.domain.models.Warehouse warehouse = new
-            com.fulfilment.application.monolith.warehouses.domain.models.Warehouse();
-    warehouse.businessUnitCode = data.getBusinessUnitCode();
-    warehouse.location = data.getLocation();
-    warehouse.capacity = data.getCapacity();
-    warehouse.stock = data.getStock();
-    warehouse.archivedAt = null;
-
-    return warehouse;
-  }
-
-  private Warehouse prepareDTOFromEntity(DbWarehouse dbWarehouse) {
-    Warehouse warehouse = new Warehouse();
-    warehouse.setId(String.valueOf(dbWarehouse.id));
-    warehouse.setBusinessUnitCode(dbWarehouse.businessUnitCode);
-    warehouse.setLocation(dbWarehouse.location);
-    warehouse.setCapacity(dbWarehouse.capacity);
-    warehouse.setStock(dbWarehouse.stock);
-
-    return warehouse;
+    try {
+      createWarehouseUseCase.create(warehouseUtility.convertWarehouseObject(data));
+      data.setId(data.getId());
+      return data;
+    } catch (Exception e) {
+        throw new RuntimeException(e);
+    }
   }
 
   @Override
   public Warehouse getAWarehouseUnitByID(String id) {
     DbWarehouse dbWarehouse = warehouseRepository.findByWarehouseId(Long.valueOf(id));
-    return prepareDTOFromEntity(dbWarehouse);
+    return warehouseUtility.prepareDTOFromEntity(dbWarehouse);
   }
 
   @Override
   public void archiveAWarehouseUnitByID(String id) {
-    DbWarehouse dbWarehouse = warehouseValidator.validateArchiveById(id);
-    warehouseRepository.archive(dbWarehouse);
+    archiveWarehouseUseCase.archiveById(id);
   }
 
   @Override
   public Warehouse replaceTheCurrentActiveWarehouse(String businessUnitCode, @NotNull Warehouse data) {
-    DbWarehouse replacedWarehouse = replaceWarehouseOperation.replace(convertWarehouseObject(data));
-    return prepareDTOFromEntity(replacedWarehouse);
+    DbWarehouse replacedWarehouse = replaceWarehouseUseCase.replace(warehouseUtility.convertWarehouseObject(data));
+    return warehouseUtility.prepareDTOFromEntity(replacedWarehouse);
   }
 
   private Warehouse toWarehouseResponse(
-      com.fulfilment.application.monolith.warehouses.domain.models.Warehouse warehouse) {
+          com.fulfilment.application.monolith.warehouses.domain.models.Warehouse warehouse) {
     var response = new Warehouse();
     response.setBusinessUnitCode(warehouse.businessUnitCode);
     response.setLocation(warehouse.location);
@@ -87,4 +71,5 @@ public class WarehouseResourceImpl implements WarehouseResource {
 
     return response;
   }
+
 }

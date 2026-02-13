@@ -1,8 +1,8 @@
-package com.fulfilment.application.monolith.warehousefulfilment.implementation;
+package com.fulfilment.application.monolith.warehousefulfilment.domain.usecases;
 
-import com.fulfilment.application.monolith.warehousefulfilment.interfaces.WarehouseFulfilmentOperation;
-import com.fulfilment.application.monolith.warehousefulfilment.interfaces.WarehouseFulfilmentStore;
-import com.fulfilment.application.monolith.warehousefulfilment.model.WarehouseFulfilment;
+import com.fulfilment.application.monolith.warehousefulfilment.domain.ports.WarehouseFulfilmentOperation;
+import com.fulfilment.application.monolith.warehousefulfilment.domain.ports.WarehouseFulfilmentStore;
+import com.fulfilment.application.monolith.warehousefulfilment.domain.model.WarehouseFulfilment;
 import com.fulfilment.application.monolith.warehousefulfilment.services.WarehouseFulfilmentValidator;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;

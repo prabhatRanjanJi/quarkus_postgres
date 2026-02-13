@@ -1,4 +1,4 @@
-package com.fulfilment.application.monolith.warehousefulfilment.database;
+package com.fulfilment.application.monolith.warehousefulfilment.adapters.databse;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

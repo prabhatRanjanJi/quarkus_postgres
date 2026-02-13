@@ -1,4 +1,4 @@
-name: CI Build
+name: CI Build and test
 
 on:
   push:
@@ -26,5 +26,5 @@ jobs:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
 
-      - name: Build
-        run: mvn clean install -DskipTests=true
+      - name: Build and test
+        run: mvn clean install test

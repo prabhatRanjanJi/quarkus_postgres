@@ -1,7 +1,7 @@
-package com.fulfilment.application.monolith.warehousefulfilment.api;
+package com.fulfilment.application.monolith.warehousefulfilment.adapters.restapi;
 
-import com.fulfilment.application.monolith.warehousefulfilment.implementation.WarehouseFulfilmentUseCase;
-import com.fulfilment.application.monolith.warehousefulfilment.model.WarehouseFulfilment;
+import com.fulfilment.application.monolith.warehousefulfilment.domain.usecases.WarehouseFulfilmentUseCase;
+import com.fulfilment.application.monolith.warehousefulfilment.domain.model.WarehouseFulfilment;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.Consumes;

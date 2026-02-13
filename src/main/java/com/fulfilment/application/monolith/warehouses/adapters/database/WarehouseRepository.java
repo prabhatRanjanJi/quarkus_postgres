@@ -36,6 +36,7 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
   public DbWarehouse createWarehouse(Warehouse warehouse) {
     DbWarehouse warehouseEntity = createWareHouseEntityFromObj(warehouse);
     persist(warehouseEntity);
+    warehouse.setId(warehouse.getId());
     return warehouseEntity;
   }
 

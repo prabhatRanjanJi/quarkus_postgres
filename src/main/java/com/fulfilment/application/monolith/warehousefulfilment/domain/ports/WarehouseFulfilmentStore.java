@@ -1,6 +1,6 @@
-package com.fulfilment.application.monolith.warehousefulfilment.interfaces;
+package com.fulfilment.application.monolith.warehousefulfilment.domain.ports;
 
-import com.fulfilment.application.monolith.warehousefulfilment.model.WarehouseFulfilment;
+import com.fulfilment.application.monolith.warehousefulfilment.domain.model.WarehouseFulfilment;
 
 public interface WarehouseFulfilmentStore {
 

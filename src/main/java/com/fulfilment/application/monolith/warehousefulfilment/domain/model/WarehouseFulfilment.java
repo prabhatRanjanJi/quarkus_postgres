@@ -1,4 +1,4 @@
-package com.fulfilment.application.monolith.warehousefulfilment.model;
+package com.fulfilment.application.monolith.warehousefulfilment.domain.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

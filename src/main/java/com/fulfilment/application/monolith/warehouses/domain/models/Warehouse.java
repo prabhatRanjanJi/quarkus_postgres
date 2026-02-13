@@ -1,13 +1,18 @@
 package com.fulfilment.application.monolith.warehouses.domain.models;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
+@Getter
+@Setter
 public class Warehouse {
 
   // unique identifier
+  public Integer id;
   public String businessUnitCode;
 
   public String location;

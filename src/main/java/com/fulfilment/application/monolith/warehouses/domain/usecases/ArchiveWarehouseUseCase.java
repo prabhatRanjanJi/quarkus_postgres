@@ -22,4 +22,10 @@ public class ArchiveWarehouseUseCase implements ArchiveWarehouseOperation {
     DbWarehouse dbWarehouse = warehouseValidator.validateArchive(warehouse.businessUnitCode);
     warehouseStore.archive(dbWarehouse);
   }
+
+  @Override
+  public void archiveById(String id) {
+    DbWarehouse byWarehouseId = warehouseStore.findByWarehouseId(Long.valueOf(id));
+    archive(byWarehouseId.toWarehouse());
+  }
 }

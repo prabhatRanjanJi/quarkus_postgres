@@ -1,7 +1,7 @@
 package com.fulfilment.application.monolith.warehousefulfilment.services;
 
-import com.fulfilment.application.monolith.warehousefulfilment.interfaces.WarehouseFulfilmentStore;
-import com.fulfilment.application.monolith.warehousefulfilment.model.WarehouseFulfilment;
+import com.fulfilment.application.monolith.warehousefulfilment.domain.ports.WarehouseFulfilmentStore;
+import com.fulfilment.application.monolith.warehousefulfilment.domain.model.WarehouseFulfilment;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.RequiredArgsConstructor;
 

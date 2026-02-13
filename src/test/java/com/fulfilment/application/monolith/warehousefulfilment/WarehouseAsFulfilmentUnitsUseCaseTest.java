@@ -1,6 +1,6 @@
 package com.fulfilment.application.monolith.warehousefulfilment;
 
-import com.fulfilment.application.monolith.warehousefulfilment.model.WarehouseFulfilment;
+import com.fulfilment.application.monolith.warehousefulfilment.domain.model.WarehouseFulfilment;
 import com.fulfilment.application.monolith.warehousefulfilment.services.WarehouseFulfilmentValidator;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;

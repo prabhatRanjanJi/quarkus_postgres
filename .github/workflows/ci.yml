@@ -11,8 +11,12 @@ env:
   MAVEN_OPTS: -Xmx1024m
 
 jobs:
+
+  # ==========================================
+  # Stage 1: Build JAR
+  # ==========================================
   build:
-    name: Build JAR + Tests + Coverage
+    name: Build JAR
     runs-on: ubuntu-latest
 
     steps:
@@ -26,10 +30,7 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
           cache: maven
 
-      # -------------------------------
-      # Step 1: Build JAR (no tests)
-      # -------------------------------
-      - name: Build JAR
+      - name: Build JAR (skip tests)
         run: mvn clean package -DskipTests
 
       - name: Upload Build Artifact
@@ -40,10 +41,26 @@ jobs:
             target/*.jar
             target/quarkus-app/**
 
-      # ----------------------------------------------
-      # Step 2: Run Unit + Integration Tests + Coverage
-      # ----------------------------------------------
-      - name: Run Unit & Integration Tests with Coverage
+  # ==========================================
+  # Stage 2: Tests + Coverage
+  # ==========================================
+  test:
+    name: Unit & Integration Tests + Coverage
+    runs-on: ubuntu-latest
+    needs: build   # 👈 depends on build stage
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: maven
+
+      - name: Run Unit & Integration Tests
         run: mvn verify
 
       - name: Upload JaCoCo Report

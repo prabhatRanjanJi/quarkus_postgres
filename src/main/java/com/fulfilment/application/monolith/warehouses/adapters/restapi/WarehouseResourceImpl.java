@@ -3,8 +3,6 @@ package com.fulfilment.application.monolith.warehouses.adapters.restapi;
 import com.fulfilment.application.monolith.warehouses.WarehouseUtility;
 import com.fulfilment.application.monolith.warehouses.adapters.database.DbWarehouse;
 import com.fulfilment.application.monolith.warehouses.adapters.database.WarehouseRepository;
-import com.fulfilment.application.monolith.warehouses.domain.WarehouseValidator;
-import com.fulfilment.application.monolith.warehouses.domain.ports.ReplaceWarehouseOperation;
 import com.fulfilment.application.monolith.warehouses.domain.usecases.ArchiveWarehouseUseCase;
 import com.fulfilment.application.monolith.warehouses.domain.usecases.CreateWarehouseUseCase;
 import com.fulfilment.application.monolith.warehouses.domain.usecases.ReplaceWarehouseUseCase;
@@ -21,12 +19,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WarehouseResourceImpl implements WarehouseResource {
 
-  @Inject private WarehouseRepository warehouseRepository;
-  private final WarehouseValidator warehouseValidator;
-  private final CreateWarehouseUseCase createWarehouseUseCase;
-  private final ArchiveWarehouseUseCase archiveWarehouseUseCase;
-  private final ReplaceWarehouseUseCase replaceWarehouseUseCase;
-  private final WarehouseUtility warehouseUtility;
+  @Inject private final WarehouseRepository warehouseRepository;
+  @Inject private final CreateWarehouseUseCase createWarehouseUseCase;
+  @Inject private final ArchiveWarehouseUseCase archiveWarehouseUseCase;
+  @Inject private final ReplaceWarehouseUseCase replaceWarehouseUseCase;
+  @Inject private final WarehouseUtility warehouseUtility;
 
   @Override
   public List<Warehouse> listAllWarehousesUnits() {

@@ -4,10 +4,13 @@ import com.fulfilment.application.monolith.warehouses.domain.models.Warehouse;
 import com.fulfilment.application.monolith.warehouses.domain.ports.LocationResolver;
 import com.fulfilment.application.monolith.warehouses.domain.ports.WarehouseStore;
 import io.quarkus.test.InjectMock;
-import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,17 +21,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@QuarkusTest
+@ExtendWith(MockitoExtension.class)
+@DisplayName("ArchiveWarehouseUseCaseTest")
 public class ArchiveWarehouseUseCaseTest {
 
-    @InjectMock
-    WarehouseStore warehouseStore;
+    @Mock
+    private WarehouseStore warehouseStore;
 
-    @InjectMock
-    LocationResolver locationResolver;
+    @Mock
+    private LocationResolver locationResolver;
 
-    @Inject
-    ArchiveWarehouseUseCase archiveWarehouseUseCase;
+    @Mock
+    private ArchiveWarehouseUseCase archiveWarehouseUseCase;
 
     @Test
     public void shouldFailWhenBusinessUnitDoesNotExists() {

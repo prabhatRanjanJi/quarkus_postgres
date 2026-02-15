@@ -9,7 +9,11 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
@@ -20,21 +24,22 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RequiredArgsConstructor
-@QuarkusTest
+//@RequiredArgsConstructor
+@ExtendWith(MockitoExtension.class)
+@DisplayName("ReplaceWarehouseUseCaseTest")
 public class ReplaceWarehouseUseCaseTest {
 
-    @InjectMock
-    private final WarehouseStore warehouseStore;
+    @Mock
+    private WarehouseStore warehouseStore;
 
-    @InjectMock
-    private final LocationResolver locationResolver;
+    @Mock
+    private LocationResolver locationResolver;
 
-    @Inject
-    private final ReplaceWarehouseUseCase replaceWarehouseUseCase;
+    @Mock
+    private ReplaceWarehouseUseCase replaceWarehouseUseCase;
 
-    @InjectMock
-    private final WarehouseRepository warehouseRepository;
+    @Mock
+    private WarehouseRepository warehouseRepository;
 
     @Test
     void shouldFailWhenBusinessUnitDoesNotExists() {

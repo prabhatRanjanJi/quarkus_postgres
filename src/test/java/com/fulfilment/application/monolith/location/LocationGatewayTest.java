@@ -3,13 +3,17 @@ package com.fulfilment.application.monolith.location;
 import com.fulfilment.application.monolith.exception.InvalidInputException;
 import com.fulfilment.application.monolith.exception.LocationNotFound;
 import com.fulfilment.application.monolith.warehouses.domain.models.Location;
-import io.quarkus.test.junit.QuarkusTest;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@QuarkusTest
+//@QuarkusTest
+@ExtendWith(MockitoExtension.class)
+@DisplayName("LocationGatewayTest")
 public class LocationGatewayTest {
 
   LocationGateway locationGateway = new LocationGateway();

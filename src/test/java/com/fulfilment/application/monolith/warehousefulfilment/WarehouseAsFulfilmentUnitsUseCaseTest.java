@@ -4,17 +4,22 @@ import com.fulfilment.application.monolith.warehousefulfilment.domain.model.Ware
 import com.fulfilment.application.monolith.warehousefulfilment.services.WarehouseFulfilmentValidator;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@QuarkusTest
+@ExtendWith(MockitoExtension.class)
+@DisplayName("WarehouseAsFulfilmentUnitsUseCaseTest")
 public class WarehouseAsFulfilmentUnitsUseCaseTest {
 
-    @Inject
+    @Mock
     WarehouseFulfilmentValidator warehouseFulfilmentValidator;
 
     @Test

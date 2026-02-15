@@ -4,7 +4,8 @@ import com.fulfilment.application.monolith.StoreEnum;
 import com.fulfilment.application.monolith.stores.LegacyStoreManagerGateway;
 import com.fulfilment.application.monolith.stores.events.StoreOperationEvent;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.event.ObservesAsync;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.TransactionPhase;
 import jakarta.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ public class StorePostOperationService {
     LegacyStoreManagerGateway legacyStoreManagerGateway;
 
 
-    public void onStoreCreation(@ObservesAsync StoreOperationEvent event) {
+    public void onStoreCreation(@Observes(during = TransactionPhase.AFTER_SUCCESS) StoreOperationEvent event) {
         if (StringUtils.equalsIgnoreCase(event.getEvent(), StoreEnum.CREATE.name())) {
             LOGGER.info("Publishing to Legacy Store after Store creation...");
             legacyStoreManagerGateway.createStoreOnLegacySystem(event.getStore());

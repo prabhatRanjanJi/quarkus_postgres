@@ -9,6 +9,8 @@ import jakarta.persistence.Entity;
 @Cacheable
 public class Store extends PanacheEntity {
 
+  public Long id;
+
   @Column(length = 40, unique = true)
   public String name;
 
@@ -18,5 +20,11 @@ public class Store extends PanacheEntity {
 
   public Store(String name) {
     this.name = name;
+  }
+
+  public Store(Long id, String name, int quantityProductsInStock) {
+    this.id = id;
+    this.name = name;
+    this.quantityProductsInStock = quantityProductsInStock;
   }
 }

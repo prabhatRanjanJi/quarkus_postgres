@@ -2,8 +2,8 @@ package com.fulfilment.application.monolith.stores;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fulfilment.application.monolith.StoreEnum;
 import com.fulfilment.application.monolith.stores.events.StoreOperationEvent;
+import com.fulfilment.application.monolith.stores.service.StoreService;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
@@ -34,6 +34,9 @@ public class StoreResource {
   @Inject
   Event<StoreOperationEvent> eventAfterStoreProcessing;
 
+  @Inject
+  StoreService storeService;
+
   private static final Logger LOGGER = Logger.getLogger(StoreResource.class.getName());
 
   @GET
@@ -44,7 +47,7 @@ public class StoreResource {
   @GET
   @Path("{id}")
   public Store getSingle(Long id) {
-    Store entity = Store.findById(id);
+    Store entity = storeService.getById(id);
     if (entity == null) {
       throw new WebApplicationException("Store with id of " + id + " does not exist.", 404);
     }
@@ -57,11 +60,7 @@ public class StoreResource {
     if (store.id != null) {
       throw new WebApplicationException("Id was invalidly set on request.", 422);
     }
-    store.persistAndFlush();  // flush change to DB as not other DB operation is pending
-
-    // Now send to gateway asynchronously, we can use fire method also
-    eventAfterStoreProcessing.fireAsync(new StoreOperationEvent(store, StoreEnum.CREATE.name()));
-
+    storeService.create(store);
     return Response.ok(store).status(201).build();
   }
 
@@ -73,18 +72,14 @@ public class StoreResource {
       throw new WebApplicationException("Store Name was not set on request.", 422);
     }
 
-    Store entity = Store.findById(id);
+    Store entity = storeService.getById(id);
     if (entity == null) {
       throw new WebApplicationException("Store with id of " + id + " does not exist.", 404);
     }
-
     entity.name = updatedStore.name;
     entity.quantityProductsInStock = updatedStore.quantityProductsInStock;
-    entity.persistAndFlush(); // flush change to DB as not other DB operation is pending
 
-    // Now send to gateway asynchronously, we can use fire method also
-    eventAfterStoreProcessing.fireAsync(new StoreOperationEvent(entity, StoreEnum.UPDATE.name()));
-
+    storeService.update(entity);
     return entity;
   }
 
@@ -95,13 +90,10 @@ public class StoreResource {
     if (updatedStore.name == null) {
       throw new WebApplicationException("Store Name was not set on request.", 422);
     }
-
-    Store entity = Store.findById(id);
-
+    Store entity = storeService.getById(id);
     if (entity == null) {
       throw new WebApplicationException("Store with id of " + id + " does not exist.", 404);
     }
-
     if (entity.name != null) {
       entity.name = updatedStore.name;
     }
@@ -109,12 +101,8 @@ public class StoreResource {
     if (entity.quantityProductsInStock != 0) {
       entity.quantityProductsInStock = updatedStore.quantityProductsInStock;
     }
-    // flush change to DB as not other DB operation is pending
-    entity.persistAndFlush();
 
-    // Now send to gateway asynchronously, we can use fire method also
-    eventAfterStoreProcessing.fireAsync(new StoreOperationEvent(entity, StoreEnum.PATCH.name()));
-
+    storeService.patch(entity);
     return entity;
   }
 
@@ -122,11 +110,11 @@ public class StoreResource {
   @Path("{id}")
   @Transactional
   public Response delete(Long id) {
-    Store entity = Store.findById(id);
+    Store entity = storeService.getById(id);
     if (entity == null) {
       throw new WebApplicationException("Store with id of " + id + " does not exist.", 404);
     }
-    entity.delete();
+    storeService.delete(entity);
     return Response.status(204).build();
   }
 

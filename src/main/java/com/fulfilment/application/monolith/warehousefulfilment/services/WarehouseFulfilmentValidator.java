@@ -12,13 +12,13 @@ public class WarehouseFulfilmentValidator {
     private final WarehouseFulfilmentStore warehouseFulfilmentStore;
 
     public void validateWarehouseFulfilment(WarehouseFulfilment fulfilment) {
-        if (warehouseFulfilmentStore.validateProduct(fulfilment) > Long.valueOf(0)) {
+        if (warehouseFulfilmentStore.validateProduct(fulfilment) > 0L) {
             throw new RuntimeException("Each `Product` can be fulfilled by a maximum of 2 different `Warehouses` per `Store`");
         }
-        if (warehouseFulfilmentStore.validateStore(fulfilment) > Long.valueOf(0)) {
+        if (warehouseFulfilmentStore.validateStore(fulfilment) > 0L) {
             throw new RuntimeException("Each `Store` can be fulfilled by a maximum of 3 different `Warehouses`");
         }
-        if (warehouseFulfilmentStore.validateWarehouse(fulfilment) > Long.valueOf(0)) {
+        if (warehouseFulfilmentStore.validateWarehouse(fulfilment) > 0L) {
             throw new RuntimeException("Each `Warehouse` can store maximally 5 types of `Products`");
         }
     }

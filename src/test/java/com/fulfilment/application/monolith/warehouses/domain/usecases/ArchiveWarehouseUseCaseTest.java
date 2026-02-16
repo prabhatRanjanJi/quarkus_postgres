@@ -1,67 +1,75 @@
 package com.fulfilment.application.monolith.warehouses.domain.usecases;
 
+import com.fulfilment.application.monolith.warehouses.adapters.database.DbWarehouse;
+import com.fulfilment.application.monolith.warehouses.domain.WarehouseValidator;
 import com.fulfilment.application.monolith.warehouses.domain.models.Warehouse;
-import com.fulfilment.application.monolith.warehouses.domain.ports.LocationResolver;
 import com.fulfilment.application.monolith.warehouses.domain.ports.WarehouseStore;
+import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.InjectMock;
 import jakarta.inject.Inject;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-@DisplayName("ArchiveWarehouseUseCaseTest")
-public class ArchiveWarehouseUseCaseTest {
+@QuarkusTest
+class ArchiveWarehouseUseCaseTest {
 
-    @Mock
-    private WarehouseStore warehouseStore;
+    @Inject
+    ArchiveWarehouseUseCase archiveWarehouseUseCase;
 
-    @Mock
-    private LocationResolver locationResolver;
+    @InjectMock
+    WarehouseStore warehouseStore;
 
-    @Mock
-    private ArchiveWarehouseUseCase archiveWarehouseUseCase;
+    @InjectMock
+    WarehouseValidator warehouseValidator;
 
     @Test
-    public void shouldFailWhenBusinessUnitDoesNotExists() {
-        Warehouse warehouse = new Warehouse("MHW.000", "ZWOLLE-001", 10, 10, null, null);
+    void archive_shouldArchiveWarehouse() {
+        Warehouse warehouse = new Warehouse();
+        warehouse.businessUnitCode = "BU-001";
 
-        when(warehouseStore.findByBusinessUnitCode("MHW.0009")).thenReturn(null);
+        DbWarehouse dbWarehouse = new DbWarehouse();
+        dbWarehouse.businessUnitCode = "BU-001";
 
-        RuntimeException ex = assertThrows(RuntimeException.class,
-                () -> archiveWarehouseUseCase.archive(warehouse));
+        when(warehouseValidator.validateArchive("BU-001")).thenReturn(dbWarehouse);
 
-        assertTrue(ex.getMessage().contains("does not Exist"));
-        Mockito.verify(warehouseStore, Mockito.never()).create(Mockito.any());
+        assertDoesNotThrow(() -> archiveWarehouseUseCase.archive(warehouse));
+
+        verify(warehouseValidator, times(1)).validateArchive("BU-001");
+        verify(warehouseStore, times(1)).archive(dbWarehouse);
     }
 
     @Test
-    public void testWarehouseArchiveSuccess() {
-        Warehouse warehouse = new Warehouse("MHW.000", "ZWOLLE-001", 10, 10, null, null);
-        List<Warehouse> existingWarehouses = new ArrayList<>();
-        Warehouse activeWarehouse =
-                new Warehouse("MHW.000", "ZWOLLE-001", 10, 10, null, null);
-        Warehouse archivedWarehouse =
-                new Warehouse("MHW.000", "ZWOLLE-001", 8, 5, null, LocalDateTime.now());
+    void archiveById_shouldArchiveUsingId() {
+        String id = "5";
 
-        existingWarehouses.add(activeWarehouse);
-        existingWarehouses.add(archivedWarehouse);
+        DbWarehouse dbWarehouse = new DbWarehouse();
+        dbWarehouse.businessUnitCode = "BU-002";
 
-        when(warehouseStore.findByBusinessUnitCode("MHW.000")).thenReturn(existingWarehouses.get(0));
+        when(warehouseStore.findByWarehouseId(5L)).thenReturn(dbWarehouse);
+        when(warehouseValidator.validateArchive("BU-002")).thenReturn(dbWarehouse);
 
-        archiveWarehouseUseCase.archive(activeWarehouse);
-        verify(warehouseStore).update(activeWarehouse);
+        assertDoesNotThrow(() -> archiveWarehouseUseCase.archiveById(id));
+
+        verify(warehouseStore, times(1)).findByWarehouseId(5L);
+        verify(warehouseValidator, times(1)).validateArchive("BU-002");
+        verify(warehouseStore, times(1)).archive(dbWarehouse);
+    }
+
+    @Test
+    void archive_shouldThrowExceptionWhenValidationFails() {
+        Warehouse warehouse = new Warehouse();
+        warehouse.businessUnitCode = "INVALID";
+
+        when(warehouseValidator.validateArchive("INVALID"))
+                .thenThrow(new RuntimeException("Warehouse does not exist"));
+
+        assertThrows(RuntimeException.class,
+                () -> archiveWarehouseUseCase.archive(warehouse));
+
+        verify(warehouseValidator, times(1)).validateArchive("INVALID");
+        verify(warehouseStore, never()).archive(any());
     }
 }

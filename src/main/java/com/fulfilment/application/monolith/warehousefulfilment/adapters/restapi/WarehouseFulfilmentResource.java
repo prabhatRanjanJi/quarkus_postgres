@@ -8,7 +8,6 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
 
 @Path("store")
@@ -20,12 +19,10 @@ public class WarehouseFulfilmentResource {
 
   private final WarehouseFulfilmentUseCase warehouseFulfilmentUseCase;
 
-
   @POST
-  @Path("/{warehouseFulfilment}/createWarehouseFulfilment")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  WarehouseFulfilment createWarehouseFulfilment(@NotNull WarehouseFulfilment warehouseFulfilment) {
+  @Path("/createWarehouseFulfilment")
+  public WarehouseFulfilment createWarehouseFulfilment(
+          @NotNull WarehouseFulfilment warehouseFulfilment) {
     warehouseFulfilmentUseCase.save(warehouseFulfilment);
     return warehouseFulfilment;
   }

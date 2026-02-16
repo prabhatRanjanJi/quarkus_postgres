@@ -34,4 +34,3 @@ public class ProductEndpointTest {
         .body(not(containsString("TONSTAD")), containsString("KALLAX"), containsString("BESTÅ"));
   }
 }
-

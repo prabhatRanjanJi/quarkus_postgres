@@ -39,8 +39,8 @@ jobs:
         run: mvn clean verify -Ptest -B
 
       - name: Upload JaCoCo report
-        if : always()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
-          path: target/jacoco-report/**
+          path: target/jacoco-report

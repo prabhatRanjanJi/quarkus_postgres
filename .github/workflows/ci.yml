@@ -16,6 +16,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: quarkus_test
           POSTGRES_DB: quarkus_test
+        # Do NOT include 'ports' mapping
         options: >-
           --health-cmd "pg_isready -U postgres"
           --health-interval 10s
@@ -38,6 +39,14 @@ jobs:
           path: ~/.m2
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
+
+      # Optional: wait for Postgres to be ready
+      - name: Wait for Postgres
+        run: |
+          echo "Waiting for Postgres to be ready..."
+          until pg_isready -h postgres -p 5432 -U postgres; do
+            sleep 5
+          done
 
       - name: Build and run tests
         run: mvn clean verify jacoco:report -Dquarkus.profile=test

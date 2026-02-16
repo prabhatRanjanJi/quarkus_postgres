@@ -13,7 +13,7 @@ jobs:
       postgres:
         image: postgres:15
         env:
-          POSTGRES_USER: root
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: quarkus_test
           POSTGRES_DB: quarkus_test
         ports:
